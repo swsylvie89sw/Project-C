@@ -9,6 +9,7 @@ import { applyOverrides, cleanOverrides, type PriceOverride, type PriceOverrides
 import { isStorageAvailable, readJson, writeJson } from './lib/storage'
 import { ComparisonSection } from './components/ComparisonSection'
 import { CurrencySection } from './components/CurrencySection'
+import { GuidePanel } from './components/GuidePanel'
 import { LanguageToggle } from './components/LanguageToggle'
 import { ModelSection } from './components/ModelSection'
 import { PriceTable } from './components/PriceTable'
@@ -74,6 +75,17 @@ function App() {
     })
   }
 
+  /** The guided panel fills all four fields and tags them; later manual edits remove the tag. */
+  const applyGuide = (filled: UsageInput) => {
+    setUsageText({
+      monthlyUsers: String(filled.monthlyUsers),
+      interactionsPerUser: String(filled.interactionsPerUser),
+      avgInputTokens: String(filled.avgInputTokens),
+      avgOutputTokens: String(filled.avgOutputTokens),
+    })
+    setFromGuide(new Set<UsageField>(['monthlyUsers', 'interactionsPerUser', 'avgInputTokens', 'avgOutputTokens']))
+  }
+
   const saveOverrides = (next: PriceOverrides) => {
     setOverrides(next)
     writeJson(PRICES_KEY, next)
@@ -104,6 +116,8 @@ function App() {
 
       <main className="mx-auto max-w-6xl space-y-4 px-4 py-6">
         {!storageOk && <Notice>{t('app.storageUnavailable')}</Notice>}
+
+        <GuidePanel model={selected} money={money} onApply={applyGuide} />
 
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="space-y-4">
