@@ -2,7 +2,7 @@
 
 A browser-only web app for AI consultants: estimate AI API costs, then evaluate ROI and TCO before presenting a proposal. There is no backend; settings are kept in the browser's `localStorage`.
 
-Live: https://swsylvie89sw.github.io/my_AI_ROI_sim/
+Live: https://swsylvie89sw.github.io/Project-C/
 
 Scope is defined in [`scope.md`](scope.md); build rules are in [`CLAUDE.md`](CLAUDE.md).
 

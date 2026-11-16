@@ -6,7 +6,7 @@ A browser-only web app (no backend) for AI consultants and non-experts: estimate
 Read `scope.md` first. Anything not listed as MUST HAVE or SHOULD HAVE is out of scope; do not add it.
 
 ## Stack
-Vite, React, TypeScript, Tailwind CSS, Vitest. Persistence: browser `localStorage` only (always in try/catch; the app must work without it). Hosted as a static site on GitHub Pages (https://swsylvie89sw.github.io/my_AI_ROI_sim/), so `vite.config.ts` needs `base: '/my_AI_ROI_sim/'`.
+Vite, React, TypeScript, Tailwind CSS, Vitest. Persistence: browser `localStorage` only (always in try/catch; the app must work without it). Hosted as a static site on GitHub Pages (https://swsylvie89sw.github.io/Project-C/), so `vite.config.ts` needs `base: '/Project-C/'`.
 
 ## Commands
 - `npm run dev`: local dev server
