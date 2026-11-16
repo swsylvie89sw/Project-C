@@ -1,8 +1,134 @@
+import { useMemo, useState } from 'react'
+import baseModels from './data/models.json'
+import { estimateCost } from './engine/costEngine'
+import type { ModelInfo, UsageInput } from './engine/types'
+import { useI18n } from './i18n'
+import { cleanCurrencySettings, type CurrencySettings } from './lib/currency'
+import { parseNonNegative } from './lib/parse'
+import { applyOverrides, cleanOverrides, type PriceOverride, type PriceOverrides } from './lib/prices'
+import { isStorageAvailable, readJson, writeJson } from './lib/storage'
+import { ComparisonSection } from './components/ComparisonSection'
+import { CurrencySection } from './components/CurrencySection'
+import { LanguageToggle } from './components/LanguageToggle'
+import { ModelSection } from './components/ModelSection'
+import { PriceTable } from './components/PriceTable'
+import { ResultsSection } from './components/ResultsSection'
+import { UseCaseSection, type UseCase } from './components/UseCaseSection'
+import { UsageSection, type UsageField, type UsageText } from './components/UsageSection'
+import { Notice } from './components/ui'
+import { useMoney } from './components/useMoney'
+
+const PRICES_KEY = 'roiSim.priceOverrides'
+const CURRENCY_KEY = 'roiSim.currency'
+
+const models = baseModels as ModelInfo[]
+
+const DEFAULT_USAGE: UsageText = {
+  monthlyUsers: '1000',
+  interactionsPerUser: '20',
+  avgInputTokens: '500',
+  avgOutputTokens: '200',
+}
+
 function App() {
+  const { t } = useI18n()
+  const [storageOk] = useState(isStorageAvailable)
+
+  const [useCase, setUseCase] = useState<UseCase>({ name: '', description: '' })
+  const [overrides, setOverrides] = useState<PriceOverrides>(() => cleanOverrides(readJson(PRICES_KEY, {})))
+  const pricedModels = useMemo(() => applyOverrides(models, overrides), [overrides])
+  const [selectedId, setSelectedId] = useState(pricedModels[0].id)
+  const selected = pricedModels.find((m) => m.id === selectedId) ?? pricedModels[0]
+
+  const [usageText, setUsageText] = useState<UsageText>(DEFAULT_USAGE)
+  const [fromGuide, setFromGuide] = useState<ReadonlySet<UsageField>>(new Set())
+  const [compareIds, setCompareIds] = useState<string[]>(() => pricedModels.slice(0, 2).map((m) => m.id))
+  const [currency, setCurrencyState] = useState<CurrencySettings>(() =>
+    cleanCurrencySettings(readJson(CURRENCY_KEY, null)),
+  )
+  const money = useMoney(currency)
+
+  const parsed = {
+    monthlyUsers: parseNonNegative(usageText.monthlyUsers),
+    interactionsPerUser: parseNonNegative(usageText.interactionsPerUser),
+    avgInputTokens: parseNonNegative(usageText.avgInputTokens),
+    avgOutputTokens: parseNonNegative(usageText.avgOutputTokens),
+  }
+  const hasInvalidUsage = Object.values(parsed).some((v) => v === null)
+  const usage: UsageInput = {
+    monthlyUsers: parsed.monthlyUsers ?? 0,
+    interactionsPerUser: parsed.interactionsPerUser ?? 0,
+    avgInputTokens: parsed.avgInputTokens ?? 0,
+    avgOutputTokens: parsed.avgOutputTokens ?? 0,
+  }
+  const estimate = estimateCost(usage, selected)
+
+  /** A manual edit always wins: it removes the "from guide" tag for that field. */
+  const editUsage = (field: UsageField, value: string) => {
+    setUsageText((prev) => ({ ...prev, [field]: value }))
+    setFromGuide((prev) => {
+      if (!prev.has(field)) return prev
+      const next = new Set(prev)
+      next.delete(field)
+      return next
+    })
+  }
+
+  const saveOverrides = (next: PriceOverrides) => {
+    setOverrides(next)
+    writeJson(PRICES_KEY, next)
+  }
+  const changePrice = (id: string, override: PriceOverride) => saveOverrides({ ...overrides, [id]: override })
+  const resetPrice = (id: string) => {
+    const next = { ...overrides }
+    delete next[id]
+    saveOverrides(next)
+  }
+
+  const setCurrency = (next: CurrencySettings) => {
+    setCurrencyState(next)
+    writeJson(CURRENCY_KEY, next)
+  }
+
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-12 font-sans text-slate-900">
-      <h1 className="text-center text-3xl font-bold">AI ROI Simulator</h1>
-    </main>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+          <LanguageToggle />
+          <div className="min-w-0">
+            <h1 className="text-xl font-bold tracking-tight sm:text-2xl">{t('app.title')}</h1>
+            <p className="text-sm text-slate-600">{t('app.subtitle')}</p>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-6xl space-y-4 px-4 py-6">
+        {!storageOk && <Notice>{t('app.storageUnavailable')}</Notice>}
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="space-y-4">
+            <UseCaseSection value={useCase} onChange={setUseCase} />
+            <ModelSection models={pricedModels} selected={selected} onSelect={setSelectedId} />
+            <UsageSection usage={usageText} fromGuide={fromGuide} onChange={editUsage} />
+          </div>
+          <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+            <ResultsSection
+              useCase={useCase}
+              model={selected}
+              usage={usage}
+              estimate={estimate}
+              hasInvalidUsage={hasInvalidUsage}
+              money={money}
+              currency={currency}
+            />
+          </div>
+        </div>
+
+        <ComparisonSection models={pricedModels} ids={compareIds} onChange={setCompareIds} usage={usage} money={money} />
+        <CurrencySection settings={currency} onChange={setCurrency} />
+        <PriceTable models={pricedModels} onChange={changePrice} onReset={resetPrice} onResetAll={() => saveOverrides({})} />
+      </main>
+    </div>
   )
 }
 
