@@ -1,15 +1,12 @@
 @import "tailwindcss";
 
-:root {
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@theme {
+  /* Latin first, then fonts that cover Traditional Chinese on each platform */
+  --font-sans: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang TC',
+    'Microsoft JhengHei', 'Noto Sans TC', 'Noto Sans CJK TC', sans-serif;
 }
 
 body {
-  min-width: 320px;
-  min-height: 100vh;
   margin: 0;
+  min-width: 320px;
 }
