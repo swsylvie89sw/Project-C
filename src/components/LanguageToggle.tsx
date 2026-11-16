@@ -9,17 +9,17 @@ const OPTIONS: { lang: Lang; label: string }[] = [
 export function LanguageToggle() {
   const { lang, setLang, t } = useI18n()
   return (
-    <div role="group" aria-label={t('lang.label')} className="inline-flex items-center text-sm">
+    <div role="group" aria-label={t('lang.label')} className="glass-strong inline-flex items-center rounded-full p-0.5 text-sm">
       {OPTIONS.map((option, index) => (
         <span key={option.lang} className="inline-flex items-center">
-          {index > 0 && <span className="px-1 text-slate-400" aria-hidden="true">|</span>}
+          {index > 0 && <span className="px-0.5 text-slate-400" aria-hidden="true">|</span>}
           <button
             type="button"
             onClick={() => setLang(option.lang)}
             aria-pressed={lang === option.lang}
             lang={option.lang === 'en' ? 'en' : 'zh-Hant-TW'}
-            className={`rounded px-1.5 py-0.5 ${
-              lang === option.lang ? 'font-semibold text-indigo-700 underline underline-offset-4' : 'text-slate-600 hover:text-slate-900'
+            className={`min-h-8 cursor-pointer rounded-full px-3 py-1 transition-colors duration-150 ${
+              lang === option.lang ? 'bg-blue-600 font-semibold text-white shadow-sm' : 'text-slate-700 hover:bg-white hover:text-slate-900'
             }`}
           >
             {option.label}

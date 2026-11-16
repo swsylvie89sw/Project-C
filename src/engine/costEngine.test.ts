@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compareCosts, convertFromUsd, estimateCost, MAX_INPUT } from './costEngine'
+import { compareCosts, convertFromUsd, costShare, estimateCost, MAX_INPUT } from './costEngine'
 import models from '../data/models.json'
 
 const allFinite = (obj: object) =>
@@ -183,5 +183,20 @@ describe('models.json', () => {
   it('provider/model pairs are unique', () => {
     const keys = models.map((m) => `${m.provider}/${m.model}`)
     expect(new Set(keys).size).toBe(keys.length)
+  })
+})
+
+describe('costShare', () => {
+  it('splits the monthly cost into input and output fractions', () => {
+    const r = costShare({ inputCost: 25, outputCost: 75 })
+    expect(r.inputShare).toBeCloseTo(0.25)
+    expect(r.outputShare).toBeCloseTo(0.75)
+  })
+  it('returns zeros when the total is zero', () => {
+    expect(costShare({ inputCost: 0, outputCost: 0 })).toEqual({ inputShare: 0, outputShare: 0 })
+  })
+  it('never returns NaN or Infinity for bad inputs', () => {
+    const r = costShare({ inputCost: Number.NaN, outputCost: Number.POSITIVE_INFINITY })
+    expect(Number.isFinite(r.inputShare) && Number.isFinite(r.outputShare)).toBe(true)
   })
 })

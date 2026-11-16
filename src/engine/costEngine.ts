@@ -73,3 +73,18 @@ export function convertFromUsd(amountUsd: number, rate: number | null | undefine
   if (!Number.isFinite(amountUsd)) return null
   return amountUsd * rate
 }
+
+/**
+ * Share of the monthly cost that comes from input and from output tokens, as fractions (0 to 1).
+ * Both are 0 when the total is 0 or not finite, so the UI never divides by zero.
+ */
+export function costShare(estimate: Pick<CostEstimate, 'inputCost' | 'outputCost'>): {
+  inputShare: number
+  outputShare: number
+} {
+  const input = sanitize(estimate.inputCost)
+  const output = sanitize(estimate.outputCost)
+  const total = input + output
+  if (!(total > 0) || !Number.isFinite(total)) return { inputShare: 0, outputShare: 0 }
+  return { inputShare: input / total, outputShare: output / total }
+}

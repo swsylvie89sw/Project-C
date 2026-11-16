@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { parseNonNegative, parsePositive } from './parse'
 import { applyOverrides, cleanOverrides, modelId, providers } from './prices'
-import { formatMoney, formatPercentChange } from './format'
+import { formatMoney, formatPercent, formatPercentChange } from './format'
 import { activeRate, cleanCurrencySettings } from './currency'
 
 const models = [
@@ -92,5 +92,12 @@ describe('format', () => {
   it('formats percent change with a sign', () => {
     expect(formatPercentChange(0.25, 'en-US')).toBe('+25%')
     expect(formatPercentChange(0, 'en-US')).toBe('0%')
+  })
+})
+
+describe('formatPercent', () => {
+  it('formats a fraction without a sign and guards non-finite values', () => {
+    expect(formatPercent(0.25, 'en-US')).toBe('25%')
+    expect(formatPercent(Number.NaN, 'en-US')).toBe('–')
   })
 })

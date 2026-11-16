@@ -34,3 +34,9 @@ export function formatPercentChange(fraction: number, locale: string): string {
     signDisplay: 'exceptZero',
   }).format(fraction)
 }
+
+/** A fraction (0.25) as a plain percentage (25%), no sign. */
+export function formatPercent(fraction: number, locale: string): string {
+  if (!Number.isFinite(fraction)) return '–'
+  return new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 }).format(fraction)
+}

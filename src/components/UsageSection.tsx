@@ -1,3 +1,4 @@
+import { IconUsers } from './icons'
 import type { UsageInput } from '../engine/types'
 import { useI18n, type MessageKey } from '../i18n'
 import { parseNonNegative } from '../lib/parse'
@@ -22,7 +23,7 @@ interface Props {
 export function UsageSection({ usage, fromGuide, onChange }: Props) {
   const { t } = useI18n()
   return (
-    <Card title={t('usage.heading')}>
+    <Card title={t('usage.heading')} icon={<IconUsers />}>
       <div className="grid gap-3 sm:grid-cols-2">
         {USAGE_FIELDS.map(({ field, label }) => (
           <NumberField

@@ -17,6 +17,8 @@ import { ResultsSection } from './components/ResultsSection'
 import { UseCaseSection, type UseCase } from './components/UseCaseSection'
 import { UsageSection, type UsageField, type UsageText } from './components/UsageSection'
 import { Notice } from './components/ui'
+import { HeroSummary } from './components/HeroSummary'
+import { IconBars } from './components/icons'
 import { useMoney } from './components/useMoney'
 
 const PRICES_KEY = 'roiSim.priceOverrides'
@@ -103,29 +105,39 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+    <div className="min-h-screen font-sans text-slate-900">
+      <header className="glass sticky top-0 z-20 border-x-0 border-t-0">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
           <LanguageToggle />
-          <div className="min-w-0">
-            <h1 className="text-xl font-bold tracking-tight sm:text-2xl">{t('app.title')}</h1>
-            <p className="text-sm text-slate-600">{t('app.subtitle')}</p>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span
+              aria-hidden="true"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-md shadow-blue-600/25"
+            >
+              <IconBars className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold leading-tight tracking-tight sm:text-xl">{t('app.title')}</h1>
+              <p className="text-xs text-slate-600 sm:text-sm">{t('app.subtitle')}</p>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl space-y-4 px-4 py-6">
+      <main className="mx-auto max-w-6xl space-y-5 px-4 py-6 sm:py-8">
         {!storageOk && <Notice>{t('app.storageUnavailable')}</Notice>}
+
+        <HeroSummary model={selected} estimate={estimate} hasInvalidUsage={hasInvalidUsage} money={money} />
 
         <GuidePanel model={selected} money={money} onApply={applyGuide} />
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="space-y-4">
+        <div className="grid gap-5 lg:grid-cols-2">
+          <div className="space-y-5">
             <UseCaseSection value={useCase} onChange={setUseCase} />
             <ModelSection models={pricedModels} selected={selected} onSelect={setSelectedId} />
             <UsageSection usage={usageText} fromGuide={fromGuide} onChange={editUsage} />
           </div>
-          <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+          <div className="space-y-5 lg:sticky lg:top-24 lg:self-start">
             <ResultsSection
               useCase={useCase}
               model={selected}

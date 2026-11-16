@@ -1,3 +1,4 @@
+import { IconCpu } from './icons'
 import { useI18n } from '../i18n'
 import { formatMoney } from '../lib/format'
 import { providers, type PricedModel } from '../lib/prices'
@@ -20,7 +21,7 @@ export function ModelSection({ models, selected, onSelect }: Props) {
   }
 
   return (
-    <Card title={t('model.heading')}>
+    <Card title={t('model.heading')} icon={<IconCpu />}>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor="provider" className="mb-1 block text-sm font-medium text-slate-700">

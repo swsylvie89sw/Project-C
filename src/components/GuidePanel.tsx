@@ -1,3 +1,4 @@
+import { IconSparkles } from './icons'
 import { useEffect, useId, useMemo, useState } from 'react'
 import { estimateCost } from '../engine/costEngine'
 import type { UsageInput } from '../engine/types'
@@ -45,7 +46,7 @@ function PartLabel({ htmlFor, label, kind, hint }: { htmlFor: string; label: str
         </label>
         <Tag tone={kind === 'input' ? 'indigo' : 'emerald'}>{t(kind === 'input' ? 'guide.part.input' : 'guide.part.output')}</Tag>
       </div>
-      <p className="text-xs text-slate-500">{hint}</p>
+      <p className="text-xs text-slate-600">{hint}</p>
     </div>
   )
 }
@@ -146,10 +147,15 @@ export function GuidePanel({ model, money, onApply }: Props) {
   const tokensLabel = (v: number) => t('guide.tokens', { count: n(v) })
 
   return (
-    <section className="rounded-xl border border-indigo-200 bg-indigo-50/40 shadow-sm">
+    <section className="glass rounded-2xl ring-1 ring-blue-600/15">
       <div className="flex flex-wrap items-center justify-between gap-3 p-4 sm:p-5">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-slate-900">{t('guide.heading')}</h2>
+          <h2 className="flex items-center gap-2.5 text-lg font-semibold tracking-tight text-slate-900">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-orange-500/10 text-orange-700 ring-1 ring-orange-500/20">
+              <IconSparkles />
+            </span>
+            {t('guide.heading')}
+          </h2>
           <p className="text-sm text-slate-600">{t('guide.intro')}</p>
         </div>
         <button type="button" className={buttonClass} aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(!open)}>
@@ -158,7 +164,7 @@ export function GuidePanel({ model, money, onApply }: Props) {
       </div>
 
       {open && (
-        <div id={panelId} className="space-y-5 border-t border-indigo-100 p-4 sm:p-5">
+        <div id={panelId} className="space-y-5 border-t border-blue-100 p-4 sm:p-5">
           <Notice tone="slate">{t('guide.accuracyNote')}</Notice>
 
           <div className="flex flex-wrap items-end gap-3">
@@ -179,14 +185,14 @@ export function GuidePanel({ model, money, onApply }: Props) {
             <button type="button" className={buttonClass} onClick={() => touch(loadExample)(undefined)}>
               {t('guide.loadExample')}
             </button>
-            <p className="w-full text-xs text-slate-500">{t('guide.contentLanguageHint')}</p>
+            <p className="w-full text-xs text-slate-600">{t('guide.contentLanguageHint')}</p>
           </div>
 
           {tokenizer.status === 'idle' &&<Notice tone="slate">{t('guide.tokenizerLoading')}</Notice>}
           {tokenizer.status === 'error' && <Notice>{t('guide.tokenizerError')}</Notice>}
 
           {/* Step 1 */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="glass-strong rounded-xl p-4">
             <StepHeading>{t('guide.step1')}</StepHeading>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
@@ -276,14 +282,14 @@ export function GuidePanel({ model, money, onApply }: Props) {
           </div>
 
           {/* Step 2 */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="glass-strong rounded-xl p-4">
             <StepHeading>{t('guide.step2')}</StepHeading>
-            <p className="mb-3 text-xs text-slate-500">{t('guide.forModel', { provider: model.provider, model: model.model })}</p>
+            <p className="mb-3 text-xs text-slate-600">{t('guide.forModel', { provider: model.provider, model: model.model })}</p>
             <dl className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-md bg-indigo-50 p-3">
-                <dt className="text-xs font-medium text-indigo-800">{t('guide.inputTokens')}</dt>
+              <div className="rounded-md bg-blue-50 p-3">
+                <dt className="text-xs font-medium text-blue-800">{t('guide.inputTokens')}</dt>
                 <dd className="text-lg font-semibold tabular-nums text-slate-900">{n(perRequest.monthlyInputTokens)}</dd>
-                <dt className="mt-2 text-xs font-medium text-indigo-800">{t('guide.inputCostPerRequest')}</dt>
+                <dt className="mt-2 text-xs font-medium text-blue-800">{t('guide.inputCostPerRequest')}</dt>
                 <dd className="tabular-nums text-slate-900">{m(perRequest.inputCost)}</dd>
               </div>
               <div className="rounded-md bg-emerald-50 p-3">
@@ -299,7 +305,7 @@ export function GuidePanel({ model, money, onApply }: Props) {
           </div>
 
           {/* Step 3 */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="glass-strong rounded-xl p-4">
             <StepHeading>{t('guide.step3')}</StepHeading>
             <fieldset className="mb-3">
               <legend className="mb-1 text-sm font-medium text-slate-700">{t('guide.volumeMode')}</legend>
@@ -310,7 +316,7 @@ export function GuidePanel({ model, money, onApply }: Props) {
                     type="button"
                     aria-pressed={volumeMode === mode}
                     onClick={() => touch(setVolumeMode)(mode)}
-                    className={`rounded px-3 py-1 text-sm ${volumeMode === mode ? 'bg-indigo-600 font-semibold text-white' : 'text-slate-700 hover:bg-slate-50'}`}
+                    className={`rounded px-3 py-1 text-sm ${volumeMode === mode ? 'bg-blue-600 font-semibold text-white' : 'text-slate-700 hover:bg-slate-50'}`}
                   >
                     {t(`guide.volumeMode.${mode}`)}
                   </button>

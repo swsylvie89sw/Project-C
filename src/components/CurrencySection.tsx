@@ -1,3 +1,4 @@
+import { IconCoins } from './icons'
 import { useI18n } from '../i18n'
 import { CURRENCIES, isCurrency, type CurrencySettings } from '../lib/currency'
 import { parsePositive } from '../lib/parse'
@@ -18,7 +19,7 @@ export function CurrencySection({ settings, onChange }: Props) {
     onChange({ ...settings, rates: { ...settings.rates, [code]: { ...entry, ...patch } } })
 
   return (
-    <Card title={t('currency.heading')}>
+    <Card title={t('currency.heading')} icon={<IconCoins />}>
       <div className="grid gap-3 sm:grid-cols-3">
         <div>
           <label htmlFor="currency" className="mb-1 block text-sm font-medium text-slate-700">
@@ -70,7 +71,7 @@ export function CurrencySection({ settings, onChange }: Props) {
       </div>
       <div className="mt-3 space-y-2">
         {rateInvalid && <Notice>{t('results.needRate', { currency: t(`currency.${code}`) })}</Notice>}
-        <p className="text-xs text-slate-500">{t('currency.note')}</p>
+        <p className="text-xs text-slate-600">{t('currency.note')}</p>
       </div>
     </Card>
   )

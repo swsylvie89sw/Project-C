@@ -1,3 +1,4 @@
+import { IconReceipt } from './icons'
 import { effectiveTokenAdjust } from '../engine/costEngine'
 import type { CostEstimate, UsageInput } from '../engine/types'
 import { useI18n } from '../i18n'
@@ -20,12 +21,12 @@ interface Props {
 
 function Row({ label, value, formula, strong }: { label: string; value: string; formula: string; strong?: boolean }) {
   return (
-    <div className={`border-t border-slate-100 py-2.5 first:border-t-0 ${strong ? 'bg-indigo-50/60 -mx-2 rounded px-2' : ''}`}>
+    <div className={`border-t border-slate-100 py-2.5 first:border-t-0 ${strong ? 'bg-blue-50/60 -mx-2 rounded px-2' : ''}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <dt className={`text-sm ${strong ? 'font-semibold text-slate-900' : 'text-slate-700'}`}>{label}</dt>
-        <dd className={`tabular-nums ${strong ? 'text-lg font-bold text-indigo-700' : 'font-medium text-slate-900'}`}>{value}</dd>
+        <dd className={`tabular-nums ${strong ? 'text-lg font-bold text-blue-700' : 'font-medium text-slate-900'}`}>{value}</dd>
       </div>
-      <p className="mt-0.5 break-words text-xs text-slate-500">
+      <p className="mt-0.5 break-words text-xs text-slate-600">
         = {formula}
       </p>
     </div>
@@ -41,11 +42,11 @@ export function ResultsSection({ useCase, model, usage, estimate, hasInvalidUsag
   const rateEntry = currency.rates[currency.code]
 
   return (
-    <Card title={t('results.heading')}>
+    <Card title={t('results.heading')} icon={<IconReceipt />}>
       <div className="mb-3">
         <p className="text-base font-semibold text-slate-900 break-words">{useCase.name.trim() || t('results.untitled')}</p>
         {useCase.description.trim() && <p className="mt-0.5 text-sm text-slate-600 break-words whitespace-pre-line">{useCase.description}</p>}
-        <p className="mt-1 text-xs text-slate-500">{t('results.forModel', { provider: model.provider, model: model.model })}</p>
+        <p className="mt-1 text-xs text-slate-600">{t('results.forModel', { provider: model.provider, model: model.model })}</p>
       </div>
 
       <div className="space-y-2">
@@ -98,7 +99,7 @@ export function ResultsSection({ useCase, model, usage, estimate, hasInvalidUsag
       </dl>
 
       {currency.code !== 'USD' && money.rate !== null && (
-        <p className="mt-3 text-xs text-slate-500">
+        <p className="mt-3 text-xs text-slate-600">
           {t('results.currencyNote', {
             currency: currency.code,
             rate: formatNumber(money.rate, locale, 6),

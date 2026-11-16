@@ -1,3 +1,4 @@
+import { IconBriefcase } from './icons'
 import { useI18n } from '../i18n'
 import { Card, inputClass, invalidInputClass } from './ui'
 
@@ -10,7 +11,7 @@ export function UseCaseSection({ value, onChange }: { value: UseCase; onChange: 
   const { t } = useI18n()
   const missingName = value.name.trim() === ''
   return (
-    <Card title={t('useCase.heading')}>
+    <Card title={t('useCase.heading')} icon={<IconBriefcase />}>
       <div className="space-y-3">
         <div>
           <label htmlFor="useCaseName" className="mb-1 block text-sm font-medium text-slate-700">

@@ -1,3 +1,4 @@
+import { IconBars } from './icons'
 import { compareCosts, estimateCost } from '../engine/costEngine'
 import type { UsageInput } from '../engine/types'
 import { useI18n } from '../i18n'
@@ -34,17 +35,18 @@ export function ComparisonSection({ models, ids, onChange, usage, money }: Props
   return (
     <Card
       title={t('compare.heading')}
-      aside={<span className="text-xs text-slate-500">{t('compare.hint')}</span>}
+      icon={<IconBars />}
+      aside={<span className="text-xs text-slate-600">{t('compare.hint')}</span>}
     >
       {money.rate === null && (
         <div className="mb-3">
           <Notice>{t('results.needRate', { currency: t(`currency.${money.code}`) })}</Notice>
         </div>
       )}
-      <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <table className="w-full min-w-[520px] text-sm">
+      <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-hidden sm:rounded-xl sm:border sm:border-slate-200/80 sm:bg-white/60 sm:px-0">
+        <table className="w-full min-w-[520px] text-sm sm:[&_td:first-child]:pl-4 sm:[&_th:first-child]:pl-4 sm:[&_td:last-child]:pr-4 sm:[&_th:last-child]:pr-4">
           <thead>
-            <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+            <tr className="border-b border-slate-200 bg-slate-50/70 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
               <th className="py-2 pr-3 font-medium">{t('compare.model')}</th>
               <th className="py-2 pr-3 text-right font-medium">{t('compare.monthly')}</th>
               <th className="py-2 pr-3 text-right font-medium">{t('compare.annual')}</th>
@@ -54,7 +56,10 @@ export function ComparisonSection({ models, ids, onChange, usage, money }: Props
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr key={`${row.id}-${index}`} className="border-b border-slate-100 last:border-0">
+              <tr
+                key={`${row.id}-${index}`}
+                className={`border-b border-slate-100 transition-colors duration-150 last:border-0 ${row.isCheapest ? 'bg-emerald-50/60' : 'hover:bg-blue-50/50'}`}
+              >
                 <td className="py-2 pr-3">
                   <label className="sr-only" htmlFor={`compare-${index}`}>
                     {t('compare.pick', { n: index + 1 })}
